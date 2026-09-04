@@ -1035,8 +1035,9 @@ def solve_miqcp(model: pyo.ConcreteModel, tee: bool = False) -> Dict[str, Any]:
         ]
         return {"ok": ok, "solver": "gurobi", "termination": str(tc), "status": str(st)}
 
-    # 2) SCIP
-    solver = pyo.SolverFactory("scip")
+    # 2) SCIP (AMPL .nl interface — required for MIQCP on Pyomo+SCIP;
+    # NL interface does not accept the `warmstart` kwarg, so we omit it.)
+    solver = pyo.SolverFactory("scip", solver_io="nl")
     if solver is not None and solver.available(exception_flag=False):
         try:
             solver.options["limits/time"] = float(SCIP_TIME_LIMIT)
@@ -1047,7 +1048,7 @@ def solve_miqcp(model: pyo.ConcreteModel, tee: bool = False) -> Dict[str, Any]:
         except Exception:
             pass
 
-        res = solver.solve(model, tee=tee, warmstart=True)
+        res = solver.solve(model, tee=tee)
         tc = res.solver.termination_condition
         st = res.solver.status
         ok = tc in [

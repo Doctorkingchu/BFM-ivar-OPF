@@ -1,8 +1,11 @@
-@"
 __pycache__/
 *.pyc
 *.pyo
 .vscode/
 .idea/
+
+# 솔버 산출물 (재생성됨 — 기록하지 않는다)
 *.log
-"@ | Out-File -FilePath .gitignore -Encoding utf8
+logs/
+*_results.txt
+ACOPF_MINLP_results.txt

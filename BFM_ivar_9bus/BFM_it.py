@@ -642,8 +642,8 @@ def solve_miqcp(model: pyo.ConcreteModel, tee: bool = False) -> bool:
                   pyo.TerminationCondition.maxTimeLimit]:
             return True
 
-    # 2) SCIP
-    solver = pyo.SolverFactory("scip")
+    # 2) SCIP (AMPL .nl interface — required for MIQCP on Pyomo+SCIP)
+    solver = pyo.SolverFactory("scip", solver_io="nl")
     if solver is not None and solver.available(exception_flag=False):
         try:
             solver.options["limits/time"] = float(SCIP_TIME_LIMIT)
